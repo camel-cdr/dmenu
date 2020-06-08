@@ -17,9 +17,6 @@ options:
 .c.o:
 	$(CC) -c $(CFLAGS) $<
 
-config.h:
-	cp config.def.h $@
-
 $(OBJ): arg.h config.h config.mk drw.h
 
 dmenu: dmenu.o drw.o util.o
@@ -30,15 +27,6 @@ stest: stest.o
 
 clean:
 	rm -f dmenu stest $(OBJ) dmenu-$(VERSION).tar.gz
-
-dist: clean
-	mkdir -p dmenu-$(VERSION)
-	cp LICENSE Makefile README arg.h config.def.h config.mk dmenu.1\
-		drw.h util.h dmenu_path dmenu_run stest.1 $(SRC)\
-		dmenu-$(VERSION)
-	tar -cf dmenu-$(VERSION).tar dmenu-$(VERSION)
-	gzip dmenu-$(VERSION).tar
-	rm -rf dmenu-$(VERSION)
 
 install: all
 	mkdir -p $(DESTDIR)$(PREFIX)/bin
