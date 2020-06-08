@@ -1,5 +1,9 @@
 # My custom dmenu build
 
+## Patches
+* Instant
+* Highlight
+
 ## Install
 ```sh
 git clone https://gitlab.com/CamelCoder/dmenu
