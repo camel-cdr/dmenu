@@ -370,69 +370,63 @@ keypress(XKeyEvent *ev)
 
 	if (ev->state & ControlMask) {
 		switch(ksym) {
-		case XK_a: ksym = XK_Home;      break;
-		case XK_b: ksym = XK_Left;      break;
-		case XK_c: ksym = XK_Escape;    break;
-		case XK_d: ksym = XK_Delete;    break;
-		case XK_e: ksym = XK_End;       break;
-		case XK_f: ksym = XK_Right;     break;
-		case XK_g: ksym = XK_Escape;    break;
-		case XK_h: ksym = XK_BackSpace; break;
-		case XK_i: ksym = XK_Tab;       break;
-		case XK_j: /* fallthrough */
-		case XK_J: /* fallthrough */
-		case XK_m: /* fallthrough */
-		case XK_M: ksym = XK_Return; ev->state &= ~ControlMask; break;
-		case XK_n: ksym = XK_Down;      break;
-		case XK_p: ksym = XK_Up;        break;
+		case XK_n: ksym = XK_Down; break;
+		case XK_p: ksym = XK_Up;   break;
+		default:
+			return;
+		}
+	} else if (ev->state & Mod1Mask) {
+		switch(ksym) {
+		case XK_h: ksym = XK_Left;  break;
+		case XK_l: ksym = XK_Right; break;
+		case XK_j: case XK_L: ksym = XK_Down; break;
+		case XK_k: case XK_H: ksym = XK_Up;   break;
 
-		case XK_k: /* delete right */
+		case XK_J: ksym = XK_Next;  break;
+		case XK_K: ksym = XK_Prior; break;
+
+		case XK_b: movewordedge(-1); goto draw;
+		case XK_w: movewordedge(+1); goto draw;
+
+		case XK_0: cursor = 0;       goto draw;
+		case XK_dollar: cursor = strlen(text); goto draw;
+		case XK_g: ksym = XK_Home;        break;
+		case XK_G: ksym = XK_End;         break;
+
+
+		case XK_x: ksym = XK_Delete; break;
+
+		case XK_C: /* delete right */
 			text[cursor] = '\0';
 			match();
-			break;
-		case XK_u: /* delete left */
+			goto draw;
+		case XK_c: /* delete left */
 			insert(NULL, 0 - cursor);
-			break;
-		case XK_w: /* delete word */
+			goto draw;
+
+		case XK_B: /* delete word backwards */
 			while (cursor > 0 && strchr(worddelimiters, text[nextrune(-1)]))
 				insert(NULL, nextrune(-1) - cursor);
 			while (cursor > 0 && !strchr(worddelimiters, text[nextrune(-1)]))
 				insert(NULL, nextrune(-1) - cursor);
-			break;
-		case XK_y: /* paste selection */
-		case XK_Y:
+			goto draw;
+		case XK_W: /* delete word */
+			while (cursor < strlen(text) && !strchr(worddelimiters, text[nextrune(0)]))
+				insert(NULL, nextrune(-1) - cursor++);
+			while (cursor < strlen(text) && strchr(worddelimiters, text[nextrune(0)]))
+				insert(NULL, nextrune(-1) - cursor++);
+			goto draw;
+
+		case XK_p: case XK_P: /* paste selection */
 			XConvertSelection(dpy, (ev->state & ShiftMask) ? clip : XA_PRIMARY,
 			                  utf8, utf8, win, CurrentTime);
 			return;
-		case XK_Left:
-			movewordedge(-1);
-			goto draw;
-		case XK_Right:
-			movewordedge(+1);
-			goto draw;
 		case XK_Return:
 		case XK_KP_Enter:
 			break;
 		case XK_bracketleft:
 			cleanup();
 			exit(1);
-		default:
-			return;
-		}
-	} else if (ev->state & Mod1Mask) {
-		switch(ksym) {
-		case XK_b:
-			movewordedge(-1);
-			goto draw;
-		case XK_f:
-			movewordedge(+1);
-			goto draw;
-		case XK_g: ksym = XK_Home;  break;
-		case XK_G: ksym = XK_End;   break;
-		case XK_h: ksym = XK_Up;    break;
-		case XK_j: ksym = XK_Next;  break;
-		case XK_k: ksym = XK_Prior; break;
-		case XK_l: ksym = XK_Down;  break;
 		default:
 			return;
 		}

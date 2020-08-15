@@ -6,7 +6,7 @@
 
 ## Install
 ```sh
-git clone https://gitlab.com/CamelCoder/dmenu
+git clone https://aur.archlinux.org/libxft-bgra.git
 cd dmenu
 sudo make clean install
 ```
@@ -26,8 +26,8 @@ makepkg -si
 
 ### Other
 ```sh
-git clone https://gitlab.com/zanc/xft
-./configure && sudo make instal
+git clone --depth=1 https://gitlab.com/zanc/xft
+cd xft && ./configure && sudo make instal
 sudo ldconfig && reboot
 ```
 
