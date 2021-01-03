@@ -6,8 +6,6 @@
 
 ## Install
 ```sh
-git clone https://aur.archlinux.org/libxft-bgra.git
-cd dmenu
 sudo make clean install
 ```
 
